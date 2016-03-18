@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<title>IronBox</title>
+		<meta charset="utf-8">
+
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="index.css" rel="stylesheet">
+		<script src="CryptoJS v3.1.2/rollups/pbkdf2.js"></script>
+		<script src="CryptoJS v3.1.2/rollups/sha3.js"></script>
+
+	</head>
+	<body>
+
+		<form name="renovarPass" id="savePassword" action="savePassword.php" method="post">
+				Password: <input type="password" name="password"><br>
+				<font size = "2">Deve ter no mínimo 10 caracteres composto por maiusculas, minusculas e números.</font><p></p>
+				Reintroduza a Password: <input type="password" name="password2">
+				<input type="button" name="addAccount" value="Recover" onclick="pwdCompare()">
+		</form>
+		<php?
+
+		?>
+
+		<script>
+
+			function pwdCompare() {
+				var lowerCase = /^[a-z]*$/;
+				var upperCase = /^[A-Z]*$/;
+				var numbers = /^[0-9]*$/;
+				var p1 = document.renovarPass.password.value;
+				p1 = p1.replace(/^\s+/g, "");  // strip leading spaces
+				var p2 = document.renovarPass.password2.value;
+				p2 = p2.replace(/^\s+/g, "");  // strip leading spaces
+
+				var lowerFound = false;
+				var upperFound = false;
+				var numberFound = false;
+
+				for(var i = 0; i < p1.length; i++)
+					if (p1[i].match(lowerCase) && lowerFound == false)
+						lowerFound = true;
+
+					else if(p1[i].match(upperCase) && upperFound == false)
+						upperFound = true;
+
+					else if(p1[i].match(numbers) && numberFound == false)
+						numberFound = true;
+
+
+				if ((p1.length < 10) || (p1 != p2) || !lowerFound || !upperFound || !numberFound){  // minimum 10 characters
+					alert ("The two passwords do not match or have less than 10 characters!  Try again!");
+					document.renovarPass.password.value = "";
+					document.renovarPass.password2.value = "";
+					document.renovarPass.password.focus();
+				}
+				else {
+					var salt = CryptoJS.SHA3(document.renovarPass.password.value);
+					var hash = CryptoJS.PBKDF2(document.renovarPass.password.value, salt, { keySize: 512/32, iterations: 1000 });
+					var url = window.location.href;
+					var url1 = url.split("u=");
+					var newPage = "https://192.168.1.1/updatePass.php?p="+String(hash)+"&s="+String(salt)+"&u="+String(url1[1]);
+					window.location = newPage;
+				}
+			}
+
+		</script>
+
+	</body>
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  	<head>
+	    <meta charset="utf-8">
+	    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	    <!-- Bootstrap -->
+	    <link href="css/bootstrap.min.css" rel="stylesheet">
+	    <link href="index.css" rel="stylesheet">
+
+	    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+	    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+	    <!--[if lt IE 9]>
+	      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+	      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+	    <![endif]-->
+	  	</head>
+  	<body>
+	    <h1>IronBox</h1>
+
+	    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+	    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+	    <!-- Include all compiled plugins (below), or include individual files as needed -->
+	    <script src="js/bootstrap.min.js"></script>
+      <script src="CryptoJS v3.1.2/rollups/pbkdf2.js"></script>
+      <script src="CryptoJS v3.1.2/rollups/sha3.js"></script>
+
+	    <form name="username" action="verifyLogin.php" method="post">
+	    	Email: <input type="text" name="user"><p></p>
+		  </form>
+
+      <form name="password" id="savePassword" action="savePassword.php" method="post">
+          Password: <input type="password" name="pass"><p></p>
+          <input type="hidden" name="hiddenHash" id="hiddenHash"value="">
+          <input type="hidden" name="hiddenUser" id="hiddenUser"value="">
+      </form>
+
+      <form name="login">
+          <input type="button" value="Login" onclick="cipherPass()"</button>
+      </form>
+
+      <form action="recuperarPass.html">
+          <input type="submit" value="Recuperar Password"</button>
+      </form>
+
+      <form action="home.html" method="post">
+          <input type="submit" value="Home"</button>
+      </form>
+
+      <form name="reenviar">
+          <input type="button" name="reenviarEmail" value="Reenviar email de confirmação" onclick="sendEmail()">
+      </form>
+
+      <script>
+        function cipherPass(){
+          var salt = CryptoJS.SHA3(document.password.pass.value);
+          var hash = CryptoJS.PBKDF2(document.password.pass.value, salt, { keySize: 512/32, iterations: 1000 }); 
+          document.getElementById("hiddenHash").value = String(hash);
+          document.getElementById("hiddenUser").value = document.username.user.value;
+          document.getElementById("savePassword").submit();
+        }
+
+        function sendEmail(){
+          var newPage = "https://192.168.1.1/reenviarEmail.php?u="+document.login.user.value;
+          window.location = newPage;
+        }
+      </script>
+	</body>
+</html>

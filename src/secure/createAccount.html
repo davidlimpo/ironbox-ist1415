@@ -1,0 +1,81 @@
+<?php
+  session_start();
+?>
+<!DOCTYPE html>
+<html lang="en">
+  	<head>
+	    <meta charset="utf-8">
+	    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	    <!-- Bootstrap -->
+	    <link href="css/bootstrap.min.css" rel="stylesheet">
+	    <link href="index.css" rel="stylesheet">
+
+	  	</head>
+  	<body>
+	    <h1>IronBox</h1>
+
+	    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+	    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+	    <!-- Include all compiled plugins (below), or include individual files as needed -->
+	    <script src="js/bootstrap.min.js"></script>
+      <script src="CryptoJS v3.1.2/rollups/pbkdf2.js"></script>
+      <script src="CryptoJS v3.1.2/rollups/sha3.js"></script>
+
+	  <form name = "addAccount">
+	   	Email: <input type="text" name="user"><p></p>
+	   	Password: <input type="password" name="password"><br>
+       <font size = "2">Deve ter no mínimo 10 caracteres composto por maiusculas, minusculas e números.</font><p></p>
+      Reintroduza a Password: <input type="password" name="password2">
+	   	<input type="button" name="addAccount" value="Register" onclick="pwdCompare()">
+		</form>
+
+    <script type = "text/javascript">
+
+      function pwdCompare() {
+        var lowerCase = /^[a-z]*$/;
+        var upperCase = /^[A-Z]*$/;
+        var numbers = /^[0-9]*$/;
+        var p1 = document.addAccount.password.value;
+        p1 = p1.replace(/^\s+/g, "");  // strip leading spaces
+        var p2 = document.addAccount.password2.value;
+        p2 = p2.replace(/^\s+/g, "");  // strip leading spaces
+
+        var lowerFound = false;
+        var upperFound = false;
+        var numberFound = false;
+
+        for(var i = 0; i < p1.length; i++)
+          if (p1[i].match(lowerCase) && lowerFound == false)
+            lowerFound = true;
+
+          else if(p1[i].match(upperCase) && upperFound == false)
+            upperFound = true;
+
+          else if(p1[i].match(numbers) && numberFound == false)
+            numberFound = true;
+
+
+        if ((p1.length < 10) || (p1 != p2) || !lowerFound || !upperFound || !numberFound){  // minimum 10 characters
+          alert ("The two passwords do not match or have less than 10 characters!  Try again!");
+          document.addAccount.password.value = "";
+          document.addAccount.password2.value = "";
+          document.addAccount.password.focus();
+        }
+        else {
+          var salt = CryptoJS.SHA3(document.addAccount.password.value);
+          var hash = CryptoJS.PBKDF2(document.addAccount.password.value, salt, { keySize: 512/32, iterations: 1000 });
+          var newPage = "https://192.168.1.1/addAccount.php?u="+document.addAccount.user.value+"&p="+String(hash)+"&s="+String(salt);
+          window.location = newPage;
+        }
+      }
+
+    </script>
+
+		<form action="home.html" method="post">
+    		<input type="submit" value="Home"</button>
+		</form>
+
+	</body>
+</html>
