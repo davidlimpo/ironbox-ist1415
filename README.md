@@ -1,5 +1,5 @@
 # ironbox-ist1415
-Ironbox- A system to store your passwords safety.
+Ironbox- A system to store your passwords safely.
 
 In this project a program was developed to securely store and manage all the user's passwords. 
 
